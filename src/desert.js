@@ -23,6 +23,8 @@ class Desert extends Phaser.Scene {
 
         this.load.image("hv", "./assets/hummer.png");
 
+        this.load.audio("pew", "./assets/sounds/pew.wav");
+
         this.cursors = this.input.keyboard.createCursorKeys();
         this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 	}
@@ -73,6 +75,7 @@ class Desert extends Phaser.Scene {
 		this.physics.add.existing(bullet);
 		this.bullets.add(bullet);
 		bullet.body.setVelocityY(-500);
+		this.sound.play("pew", {detune: Phaser.Math.RND.between(-200, 200)});
 		return bullet;
 	}
 
