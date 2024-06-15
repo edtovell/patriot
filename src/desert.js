@@ -25,6 +25,7 @@ class Desert extends Phaser.Scene {
 
         this.load.image("hv", "./assets/hummer.png");
         this.load.image("target", "./assets/target.png");
+        this.load.image("jack", "./assets/jack.png");
 
         this.load.audio("pew", "./assets/sounds/pew.wav");
 
@@ -39,6 +40,15 @@ class Desert extends Phaser.Scene {
         this.pc.setScale(3)
         this.pc.moveSpeed = 300;
         this.pc.setCollideWorldBounds(true);
+
+        this.patriotismEmitter = this.add.particles(0, 0, "jack", {
+            scale: {start: 0.3, end: 0},
+            lifespan: 1500,
+            alpha: {start: 0.5, end: 0},
+            angle: {min: 220, max: 320},
+            speed: {min: 50, max: 50},
+            emitting: false,
+        })
 
         this.bullets = this.physics.add.group();
         this.targets = this.physics.add.group();
@@ -75,6 +85,7 @@ class Desert extends Phaser.Scene {
 
         if (Phaser.Input.Keyboard.JustDown(this.cursors.down)){
             this.hud.patriotism++;
+            this.patriotismEmitter.emitParticleAt(pc.x, pc.y-70);
         }
 
         if (Phaser.Input.Keyboard.JustDown(this.spacebar)) {

@@ -2,6 +2,7 @@ class DesertHUD extends Phaser.Scene {
     targetsHit = 0;
     patriotism = 100;
     patriotismMax = 150;
+    patriotismMin = 80;
     patriotismBarConfig = [
         game.config.width - 160,
         50,
@@ -38,8 +39,8 @@ class DesertHUD extends Phaser.Scene {
 
         this.patriotism-=0.01;
 
-        if(this.patriotism < 0){
-            this.patriotism = 0;
+        if(this.patriotism < this.patriotismMin){
+            this.patriotism = this.patriotismMin;
         } else if(this.patriotism > this.patriotismMax){
             this.patriotism = this.patriotismMax;
         }
