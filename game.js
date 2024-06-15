@@ -1,14 +1,14 @@
-var config = {
+const config = {
     type: Phaser.AUTO,
     width: 800,
     height: 600,
     physics: {
         default: "arcade",
         arcade: {
-            // debug: true,
+            debug: true,
         }
     },
-    scene: [Desert]
+    scene: [Desert, DesertHUD]
 }
 
-var game = new Phaser.Game(config);
+const game = new Phaser.Game(config);

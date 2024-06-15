@@ -4,9 +4,10 @@ class Desert extends Phaser.Scene {
     r = 0;
     bullets;
     targets;
+    hud;
 
     constructor() {
-        super({ key: "desert" })
+        super({ key: "desert" });
     }
 
     preload() {
@@ -50,6 +51,13 @@ class Desert extends Phaser.Scene {
         });
 
         var targetCollider = this.physics.add.overlap(this.bullets, this.targets, this.killTarget, null, this)
+
+        // Instantiate HUD
+        if (this.scene.isActive("desert-hud")){
+            this.scene.stop("desert-hud");
+        }
+        this.scene.launch("desert-hud");
+        this.hud = this.scene.get("desert-hud");
     }
 
     update() {
@@ -63,6 +71,10 @@ class Desert extends Phaser.Scene {
             pc.body.setVelocityX(-pc.moveSpeed);
         } else {
             pc.body.setVelocity(0);
+        }
+
+        if (Phaser.Input.Keyboard.JustDown(this.cursors.down)){
+            this.hud.patriotism++;
         }
 
         if (Phaser.Input.Keyboard.JustDown(this.spacebar)) {
@@ -109,6 +121,7 @@ class Desert extends Phaser.Scene {
         bullet.destroy();
         target.destroy();
         this.sound.play("pew", { detune: -200, rate: 0.5 })
+        this.hud.targetsHit++;
     }
 
 
