@@ -1,17 +1,17 @@
-class DesertHUD extends Phaser.Scene {
-    targetsHit = 0;
-    patriotism = 100;
-    patriotismMax = 150;
-    patriotismMin = 80;
+class StreetHUD extends Phaser.Scene {
+    change = 0;
+    patriotism = 80;
+    patriotismMax = 100;
+    patriotismMin = 0;
     patriotismBarConfig = [
         game.config.width - 160,
         50,
-        this.patriotismMax,
+        150,
         18
     ]
 
     constructor() {
-        super({ key: "desert-hud" });
+        super({ key: "street-hud" });
     }
 
     preload() {
@@ -21,7 +21,7 @@ class DesertHUD extends Phaser.Scene {
     create() {
         var HUDTextConfig = { fontSize: 18, fontFamily: "PressStart2P" };
 
-        this.targetsHitText = this.add.text(20, 50, "Targets Hit: 0", HUDTextConfig);
+        this.changeText = this.add.text(20, 50, "Change £0.00", HUDTextConfig);
         var patriotismText = this.add.text(game.config.width - 380, 50, "Patriotism: ", HUDTextConfig);
 
         var patriotismBarContainer = this.add.graphics()
@@ -35,9 +35,9 @@ class DesertHUD extends Phaser.Scene {
     }
 
     update() {
-        this.targetsHitText.setText("Targets Hit : " + this.targetsHit.toString());
+        this.changeText.setText("Change £" + (this.change / 100).toFixed(2).toString());
 
-        this.patriotism -= 0.01;
+        this.patriotism -= 0.05;
 
         if (this.patriotism < this.patriotismMin) {
             this.patriotism = this.patriotismMin;

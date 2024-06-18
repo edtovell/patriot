@@ -5,10 +5,10 @@ const config = {
     physics: {
         default: "arcade",
         arcade: {
-            // debug: true,
+            debug: true,
         }
     },
-    scene: [Desert, DesertHUD]
+    scene: [Desert, DesertHUD, Street, StreetHUD]
 }
 
 const game = new Phaser.Game(config);
