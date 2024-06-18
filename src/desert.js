@@ -6,6 +6,8 @@ class Desert extends Phaser.Scene {
     targetSpawnEvent;
     hud;
     playerControlActive = true;
+    missionText;
+    objectivesText;
 
     constructor() {
         super({ key: "desert" });
@@ -46,12 +48,14 @@ class Desert extends Phaser.Scene {
 
         this.physics.world.setBounds(10, 10, game.config.width - 20, game.config.height - 20)
 
+        // PC
         this.pc = this.physics.add.sprite(game.config.width / 2, 450, 'hv');
         this.pc.setScale(3)
         this.pc.moveSpeed = 300;
         this.pc.setDepth(this.pc.y + 30);
         this.pc.setCollideWorldBounds(true);
 
+        // EXPLOSION SPRITE
         this.anims.create({
             key: "kerplode", 
             frames: this.anims.generateFrameNumbers("boom", {start: 0, end: 7}),
@@ -64,6 +68,7 @@ class Desert extends Phaser.Scene {
         this.boom.setVisible(false);
         this.boom.on("animationcomplete", ()=>{this.boom.setVisible(false)});
 
+        // PATRIOTISM EFFECT
         this.patriotismEmitter = this.add.particles(0, 0, "jack", {
             scale: { start: 0.3, end: 0 },
             lifespan: 1500,
@@ -73,6 +78,7 @@ class Desert extends Phaser.Scene {
             emitting: false,
         });
 
+        // BULLETS AND TARGETS
         this.bullets = this.physics.add.group();
         this.targets = this.physics.add.group();
 
@@ -80,12 +86,37 @@ class Desert extends Phaser.Scene {
             callback: this.spawnTarget,
             callbackScope: this,
             delay: 5000,
-            loop: true
+            loop: true,
+            startAt: -6000,
         });
 
         var targetCollider = this.physics.add.overlap(this.bullets, this.targets, this.killTarget, null, this)
 
-        // Instantiate HUD
+        // MISSION OBJECTIVES
+        this.missionText = this.add.text(0, 200, "", {fontSize: 30, fontFamily: "PressStart2P"});
+        this.objectivesText = this.add.text(0, 240, "", {fontSize: 20, fontFamily: "PressStart2P"});
+
+        this.time.addEvent({
+            callback: ()=>{
+                this.missionText.setText("BASIC TRAINING");
+                this.missionText.setX((game.config.width/2) - (this.missionText.width/2));
+                this.objectivesText.setText("MISSION OBJECTIVES\n - Shoot targets", {align: 1});
+                this.objectivesText.setX((game.config.width/2) - (this.objectivesText.width/2));
+            },
+            callbackScope: this,
+            delay: 2000
+        })
+
+        this.time.addEvent({
+            callback: ()=>{
+                this.missionText.setVisible(false);
+                this.objectivesText.setVisible(false);
+            },
+            callbackScope: this,
+            delay: 6000,
+        });
+
+        // INSTANTIATE HUD
         if (this.scene.isActive("desert-hud")) {
             this.scene.stop("desert-hud");
         }
@@ -94,8 +125,10 @@ class Desert extends Phaser.Scene {
     }
 
     update() {
+        // BACKGROUND SCROLL
         this.bg.tilePositionY--;
 
+        // PC CONTROLS
         let pc = this.pc;
         if (this.playerControlActive){
             if (this.cursors.left.isDown && this.cursors.right.isDown) {
@@ -166,26 +199,44 @@ class Desert extends Phaser.Scene {
         this.sound.play("pew", { detune: -200, rate: 0.5 })
         this.hud.targetsHit++;
 
-        if(this.hud.targetsHit == 5){
-            this.hitMine();
+        if(this.hud.targetsHit == 1){
+            this.endingCutscene();
         }
     }
 
     endingCutscene() {
+        // stop spawning targets
         this.targetSpawnEvent.destroy();
-        
+
+        // display objectives for next level
         this.time.addEvent({
             callback: ()=>{
-                
+                this.missionText.setText("LEVEL 1");
+                this.missionText.setX((game.config.width/2)-(this.missionText.width/2))
+                this.missionText.setVisible(true);
+                this.objectivesText.setText("  MISSON OBJECTIVES\n - Kill bad guys\n - Avoid landmines", {align: 1});
+                this.objectivesText.setX((game.config.width/2)-(this.objectivesText.width/2))
+                this.objectivesText.setVisible(true);
             },
             callbackScope: this,
-            delay: 2000,
+            delay: 3000,
+        });
+        
+        // then remove text
+        this.time.addEvent({
+            callback: ()=>{
+                this.missionText.setVisible(false);
+                this.objectivesText.setVisible(false);
+            },
+            callbackScope: this,
+            delay: 8000,
         });
 
+        // then begin ending sequence
         this.time.addEvent({
             callback: this.hitMine,
             callbackScope: this,
-            delay: 10000
+            delay: 12500
         })
     }
 
@@ -214,7 +265,7 @@ class Desert extends Phaser.Scene {
             callback: ()=>{
                 this.scene.stop("desert-hud");
                 this.cameras.main.setVisible(false);
-                this.sound.play("discord", {loop: true});
+                this.sound.play("discord", {detune: 2400, rate: 0.2});
             },
             delay: 800,
             callbackScope: this
@@ -222,7 +273,12 @@ class Desert extends Phaser.Scene {
 
         // go to next scene
         this.time.addEvent({
-            
+            callback: ()=>{
+                this.sound.stopAll();
+                this.scene.start("street");
+            },
+            delay: 10000,
+            callbackScope: this
         });
 
     }
