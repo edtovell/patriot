@@ -117,6 +117,7 @@ class Street extends Phaser.Scene {
             speed: { min: 50, max: 50 },
             emitting: false,
         });
+        this.patriotismEmitter.setDepth(pc.depth + 1);
 
         // Spawn NPCs
         this.npcSpriteKeys.forEach((k)=>{this.anims.createFromAseprite(k)});

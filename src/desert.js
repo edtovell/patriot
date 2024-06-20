@@ -86,13 +86,14 @@ class Desert extends Phaser.Scene {
 
         // PATRIOTISM EFFECT
         this.patriotismEmitter = this.add.particles(0, 0, "jack", {
-            scale: { start: 0.3, end: 0 },
+            scale: { start: 0.5, end: 0 },
             lifespan: 1500,
             alpha: { start: 0.5, end: 0 },
             angle: { min: 220, max: 320 },
             speed: { min: 50, max: 50 },
             emitting: false,
         });
+        this.patriotismEmitter.setDepth(this.pc.depth + 1);
 
         // BULLETS AND TARGETS
         this.bullets = this.physics.add.group();
