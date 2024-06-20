@@ -27,6 +27,7 @@ class Street extends Phaser.Scene {
         })
 
         this.load.image("jack", "./assets/jack.png");
+        this.load.image("street", "./assets/backgrounds/street.png");
 
         this.load.aseprite("pc", "./assets/sprites/PC_Soldier.png", "./assets/sprites/PC_Soldier.json");
 
@@ -62,12 +63,21 @@ class Street extends Phaser.Scene {
         npcSpriteFiles.forEach((f)=>{this.load.aseprite(...f)});
         this.npcSpriteKeys = npcSpriteFiles.map((f)=>{return f[0]});
 
+        this.load.audio("chaching", "./assets/sounds/chaching.wav");
+        this.load.audio("music", "./assets/sounds/patriot.wav");
+
         this.cursors = this.input.keyboard.createCursorKeys();
         this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     }
 
     create() {
         this.physics.world.setBounds(10, 10, game.config.width - 20, game.config.height - 20);
+
+        this.bg = this.add.image(game.config.width/2, game.config.height/2, "street").setScale(1.7);
+
+        var music = this.sound.add("music", { loop: true, rate: 0.8 , volume: 0.5});
+        this.sound.stopAll();
+        music.play();
 
         // PC
         var pc = this.physics.add.sprite(game.config.width / 2, 450, 'pc');
@@ -87,14 +97,14 @@ class Street extends Phaser.Scene {
             pc.body.x + pc.body.width,
             pc.y - 80,
             "",
-            {fontSize: 10, fontFamily:"PressStart2P"}
+            {fontSize: 15, fontFamily:"PressStart2P"}
         );
         this.pcSpeechText.setDepth(1000);
         this.npcSpeechText = this.add.text(
             0,
             0,
             "",
-            {fontSize: 10, fontFamily:"PressStart2P", color: 0x42adf5}
+            {fontSize: 15, fontFamily:"PressStart2P", color: 0x42adf5}
         );
         this.npcSpeechText.setDepth(999);
 
@@ -248,9 +258,17 @@ class Street extends Phaser.Scene {
 
                 // despawn npcs when offscreen
                 if (npc.body.y > game.config.height + 100) {
+                    this.time.addEvent({
+                        callback: ()=>{
+                            this.npcSpriteKeys.push(npc.name)
+                        },
+                        callbackScope: this,
+                        delay: 10000,
+                    });
                     npc.destroy();
                 }
-            })
+            }
+        )
     }
 
     hello() {
@@ -276,9 +294,9 @@ class Street extends Phaser.Scene {
             return
         }
         if(npc.willGive){
-            this.npcSpeechText.setColor("green");
+            this.npcSpeechText.setColor("lightgreen");
         } else {
-            this.npcSpeechText.setColor("red");
+            this.npcSpeechText.setColor("salmon");
         }
         npc.previousVelocity = npc.body.velocity.clone();
         npc.setVelocity(0,0);
@@ -296,8 +314,15 @@ class Street extends Phaser.Scene {
                 this.npcSpeechText.setVisible(false);
                 npc.body.setVelocity(npc.previousVelocity.x, npc.previousVelocity.y);
                 npc.interactable = false;
-                this.hud.change += npc.change;
                 this.targetNpc = null;
+                if(npc.willGive){
+                    this.sound.play("chaching");
+                    this.tweens.add({
+                        targets: this.hud,
+                        change: this.hud.change + npc.change,
+                        duration: 300,
+                    });
+                }
             },
             callbackScope: this,
             delay: 1000
@@ -308,9 +333,11 @@ class Street extends Phaser.Scene {
         // NPC start coords
         let x = Phaser.Math.RND.between(100, game.config.width - 100);
 
+        // Pick a name and remove it from the list
+        let name = Phaser.Math.RND.pick(this.npcSpriteKeys);
+        this.npcSpriteKeys = this.npcSpriteKeys.filter((n)=>n!=name);
+
         // Instantiate NPC
-        let name = Phaser.Math.RND.pick(this.npcSpriteKeys)
-        console.log("Spawning NPC: " + name);
         let npc = this.physics.add.sprite(x, -100, name);
         this.npcs.add(npc);
         npc.setName(name);

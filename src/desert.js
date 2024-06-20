@@ -26,14 +26,19 @@ class Desert extends Phaser.Scene {
             loadingBar.clear();
         })
 
-        this.load.image("bg", "./assets/desert-bg.png");
-        this.load.image("hv", "./assets/hummer.png");
+        this.load.aseprite("jeep", "./assets/sprites/Jeep.png", "./assets/sprites/Jeep.json");
+        // this.load.image("road_A", "./assets/backgrounds/Road_A.png");
+        // this.load.image("road_B", "./assets/backgrounds/Road_B.png");
+        // this.load.image("road_C", "./assets/backgrounds/Road_C.png");
+        this.load.image("road_D", "./assets/backgrounds/Road_D.png");
+        this.load.image("bullet", "./assets/bullet.png");
         this.load.image("target", "./assets/target.png");
         this.load.image("jack", "./assets/jack.png");
 
         // With thanks to https://saricden.github.io/phaser3-blow-things-up
         this.load.spritesheet("boom", "./assets/boom.png", {frameWidth:64, frameHeight:64});
 
+        this.load.audio("music", "./assets/sounds/patriot.wav");
         this.load.audio("pew", "./assets/sounds/pew.wav");
         this.load.audio("beep", "./assets/sounds/beep.wav");
         this.load.audio("boom", "./assets/sounds/boom.wav");
@@ -44,16 +49,27 @@ class Desert extends Phaser.Scene {
     }
 
     create() {
-        this.bg = this.add.tileSprite(game.config.width/2, game.config.height/2, 1024, 1024, "bg");
-
+        this.bg = this.add.tileSprite(
+            game.config.width/2 + 100,
+            game.config.height/2,
+            game.config.width,
+            game.config.height,
+            "road_D",
+        );
+        this.bg.setScale(1.25);
         this.physics.world.setBounds(10, 10, game.config.width - 20, game.config.height - 20)
 
+        var music = this.sound.add("music", { loop: true, volume: 0.5});
+        this.sound.stopAll();
+        music.play();
+
         // PC
-        this.pc = this.physics.add.sprite(game.config.width / 2, 450, 'hv');
-        this.pc.setScale(3)
+        this.pc = this.physics.add.sprite(game.config.width / 2, 450, 'jeep');
         this.pc.moveSpeed = 300;
         this.pc.setDepth(this.pc.y + 30);
         this.pc.setCollideWorldBounds(true);
+        this.anims.createFromAseprite("jeep");
+        this.anims.get("pew").framerate = 5;
 
         // EXPLOSION SPRITE
         this.anims.create({
@@ -148,6 +164,8 @@ class Desert extends Phaser.Scene {
 
             if (Phaser.Input.Keyboard.JustDown(this.spacebar)) {
                 this.pew();
+            } else {
+                pc.anims.play("default", true);
             }
         }
 
@@ -158,9 +176,6 @@ class Desert extends Phaser.Scene {
                 // despawn bullets when offscreen
                 if (b.body.y < 0) {
                     b.destroy();
-                } else {
-                // rotate for bullet-y-ness
-                    b.setAngle(this.r * 5);
                 }
             });
         this.r++;
@@ -179,10 +194,12 @@ class Desert extends Phaser.Scene {
 
     pew() {
         let pc = this.pc;
-        let bullet = this.add.rectangle(pc.x, pc.body.y, 5, 5, 0xffff00);
-        this.physics.add.existing(bullet);
+        pc.anims.play("pew");
+        let bullet = this.physics.add.sprite(pc.x, pc.body.y+30, "bullet");
+        bullet.setAngle(90);
+        bullet.setDepth(pc.depth + 1);
         this.bullets.add(bullet);
-        bullet.body.setVelocityY(-500);
+        bullet.body.setVelocityY(-800);
         this.sound.play("pew", { detune: Phaser.Math.RND.between(-200, 200) });
     }
 
@@ -190,7 +207,7 @@ class Desert extends Phaser.Scene {
         let x = Phaser.Math.RND.between(100, game.config.width - 100);
         let target = this.physics.add.sprite(x, -100, "target");
         this.targets.add(target);
-        target.body.setVelocityY(60);
+        target.body.setVelocityY(75);
     }
 
     killTarget(target, bullet) {
@@ -250,6 +267,7 @@ class Desert extends Phaser.Scene {
         // go boom
         this.time.addEvent({
             callback: ()=>{
+                this.sound.stopAll()
                 this.boom.setVisible(true);
                 this.boom.play("kerplode");
                 this.sound.play("boom");
