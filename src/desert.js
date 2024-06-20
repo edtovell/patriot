@@ -199,7 +199,7 @@ class Desert extends Phaser.Scene {
         this.sound.play("pew", { detune: -200, rate: 0.5 })
         this.hud.targetsHit++;
 
-        if(this.hud.targetsHit == 1){
+        if(this.hud.targetsHit == 5){
             this.endingCutscene();
         }
     }
