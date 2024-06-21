@@ -45,7 +45,8 @@ class Desert extends Phaser.Scene {
         this.load.audio("discord", "./assets/sounds/discord.wav");
 
         this.cursors = this.input.keyboard.createCursorKeys();
-        this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+        this.XKey = this.input.keyboard.addKey('X');
+        this.ZKey = this.input.keyboard.addKey('Z');
     }
 
     create() {
@@ -59,7 +60,7 @@ class Desert extends Phaser.Scene {
         this.bg.setScale(1.25);
         this.physics.world.setBounds(10, 10, game.config.width - 20, game.config.height - 20)
 
-        var music = this.sound.add("music", { loop: true, volume: 0.5});
+        var music = this.sound.add("music", { loop: true, volume: 0.3});
         this.sound.stopAll();
         music.play();
 
@@ -167,12 +168,12 @@ class Desert extends Phaser.Scene {
                 pc.body.setVelocity(0);
             }
 
-            if (Phaser.Input.Keyboard.JustDown(this.cursors.down)) {
+            if (Phaser.Input.Keyboard.JustDown(this.ZKey)) {
                 this.hud.patriotism++;
                 this.patriotismEmitter.emitParticleAt(pc.x, pc.y - 70);
             }
 
-            if (Phaser.Input.Keyboard.JustDown(this.spacebar)) {
+            if (Phaser.Input.Keyboard.JustDown(this.XKey)) {
                 this.pew();
             } else {
                 pc.anims.play("default", true);

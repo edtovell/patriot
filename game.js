@@ -21,8 +21,9 @@ const config = {
         StreetHUD,
         StreetTitle,
         FullscreenManager,
+        Credits,
     ]
-    // scene: [TitleSplash, Street, StreetHUD, StreetTitle, FullscreenManager]
+    // scene: [Street, StreetHUD, StreetTitle, FullscreenManager, TitleSplash, Credits]
 }
 
 const game = new Phaser.Game(config);

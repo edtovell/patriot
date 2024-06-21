@@ -27,7 +27,7 @@ class Street extends Phaser.Scene {
         })
 
         this.load.image("jack", "./assets/jack.png");
-        this.load.image("street", "./assets/backgrounds/street.png");
+        this.load.image("street", "./assets/backgrounds/StreetV2.png");
 
         this.load.aseprite("pc", "./assets/sprites/PC_Soldier.png", "./assets/sprites/PC_Soldier.json");
 
@@ -67,7 +67,8 @@ class Street extends Phaser.Scene {
         this.load.audio("music", "./assets/sounds/patriot.wav");
 
         this.cursors = this.input.keyboard.createCursorKeys();
-        this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+        this.XKey = this.input.keyboard.addKey("X");
+        this.ZKey = this.input.keyboard.addKey("Z");
     }
 
     create() {
@@ -75,7 +76,7 @@ class Street extends Phaser.Scene {
 
         this.bg = this.add.image(game.config.width/2, game.config.height/2, "street").setScale(1.7);
 
-        var music = this.sound.add("music", { loop: true, rate: 0.8 , volume: 0.5});
+        var music = this.sound.add("music", { loop: true, rate: 0.8 , volume: 0.3});
         this.sound.stopAll();
         music.play();
 
@@ -186,6 +187,20 @@ class Street extends Phaser.Scene {
 
         // FULLSCREEN
         this.scene.launch("fullscreen-manager");
+
+        // END AFTER ... 1 minute?
+        this.time.addEvent({
+            callback: ()=>{
+                this.playerControlActive = false;
+                this.scene.stop("street-hud");
+                this.cameras.main.once('camerafadeoutcomplete', function(){
+                    this.scene.start("credits");
+                }, this);
+                this.cameras.main.fadeOut(6000);
+            },
+            callbackScope: this,
+            delay: 60000
+        })
     }
 
     update() {
@@ -212,12 +227,12 @@ class Street extends Phaser.Scene {
                 pc.body.setVelocity(0);
             }
 
-            if (Phaser.Input.Keyboard.JustDown(this.cursors.down)) {
+            if (Phaser.Input.Keyboard.JustDown(this.ZKey)) {
                 this.hud.patriotism++;
                 this.patriotismEmitter.emitParticleAt(pc.x, pc.y - 70);
             }
 
-            if (Phaser.Input.Keyboard.JustDown(this.spacebar)) {
+            if (Phaser.Input.Keyboard.JustDown(this.XKey)) {
                 if(this.targetNpc){
                     this.excuseMe();
                     this.playerControlActive = false;

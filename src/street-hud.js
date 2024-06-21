@@ -32,6 +32,12 @@ class StreetHUD extends Phaser.Scene {
         this.patriotismBar = this.add.graphics()
             .fillStyle(0x0411c2)
             .fillRect(...this.patriotismBarConfig);
+
+        this.tooltip1 = this.add.text(0,0, "Z   X", {fontFamily: "PressStart2P", fontSize:20});
+        this.tooltip1.setPosition(150, 580);
+
+        this.tooltip2 = this.add.text(0,0, "←   →", {fontFamily: "PressStart2P", fontSize:20});
+        this.tooltip2.setPosition(game.config.width - this.tooltip2.width - 150, 580);
     }
 
     update() {
