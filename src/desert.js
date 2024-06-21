@@ -145,6 +145,9 @@ class Desert extends Phaser.Scene {
             this.scene.stop("desert-title");
         }
         this.scene.launch("desert-title");
+
+        // FULLSCREEN
+        this.scene.launch("fullscreen-manager");
     }
 
     update() {

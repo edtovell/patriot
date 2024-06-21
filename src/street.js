@@ -183,6 +183,9 @@ class Street extends Phaser.Scene {
             this.scene.stop("street-title");
         }
         this.scene.launch("street-title");
+
+        // FULLSCREEN
+        this.scene.launch("fullscreen-manager");
     }
 
     update() {
