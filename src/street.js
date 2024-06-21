@@ -282,7 +282,8 @@ class Street extends Phaser.Scene {
     }
 
     hello() {
-        this.pcSpeechText.setText("hello");
+        let greeting = Phaser.Math.RND.pick(["hello", "hi", "hi there", "hey"]);
+        this.pcSpeechText.setText(greeting);
         this.time.addEvent({
             callback: ()=>{this.pcSpeechText.setText("")},
             callbackScope: this,
@@ -291,11 +292,17 @@ class Street extends Phaser.Scene {
     }
 
     excuseMe() {
-        this.pcSpeechText.setText("excuse me do you\nhave any change");
+        let greeting = Phaser.Math.RND.pick([
+            "excuse me do you\nhave any change",
+            "could i trouble\nyou for some change",
+            "any spare change\nplease",
+            "spare change for\na war veteran",
+        ]);
+        this.pcSpeechText.setText(greeting);
         this.time.addEvent({
             callback: ()=>{this.pcSpeechText.setText("")},
             callbackScope: this,
-            delay: 700,
+            delay: 1200,
         });
     }
 
@@ -335,7 +342,7 @@ class Street extends Phaser.Scene {
                 }
             },
             callbackScope: this,
-            delay: 1000
+            delay: 1500
         });
     }
 
@@ -380,11 +387,21 @@ class Street extends Phaser.Scene {
             npc.willGive = Phaser.Math.RND.pick([true, false]);
             if(npc.willGive){
                 npc.change = Phaser.Math.RND.pick([5, 6, 7, 10, 12, 20, 23, 28, 40, 50, 70, 100, 150, 200]);
-                npc.response = "ok sure"
+                npc.response = Phaser.Math.RND.pick([
+                    "ok sure",
+                    "here you go",
+                    "yeah alright",
+                    "i've only got this"
+                ]);
                 npc.body.debugBodyColor = 0x65e071;
             } else {
                 npc.change = 0;
-                npc.response = "no, sorry";
+                npc.response = Phaser.Math.RND.pick([
+                    "no, sorry",
+                    "sorry mate",
+                    "no change, sorry",
+                    "sorry"
+                ]);
             }
         }
 

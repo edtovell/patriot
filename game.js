@@ -13,7 +13,7 @@ const config = {
         }
     },
     scene: [Desert, DesertHUD, DesertTitle, Street, StreetHUD, StreetTitle, FullscreenManager]
-    // scene: [Street, StreetHUD, StreetTitle]
+    // scene: [Street, StreetHUD, StreetTitle, FullscreenManager]
 }
 
 const game = new Phaser.Game(config);
