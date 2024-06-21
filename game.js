@@ -8,8 +8,8 @@ const config = {
             debug: false,
         }
     },
-    scene: [Desert, DesertHUD, Street, StreetHUD]
-    // scene: [Street, StreetHUD]
+    scene: [Desert, DesertHUD, DesertTitle, Street, StreetHUD, StreetTitle]
+    // scene: [Street, StreetHUD, StreetTitle]
 }
 
 const game = new Phaser.Game(config);

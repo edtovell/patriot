@@ -128,7 +128,7 @@ class Street extends Phaser.Scene {
             callbackScope: this,
             delay: 3000,
             loop: true,
-            startAt: -6000,
+            startAt: -9000,
         });
 
         // Mission Objectives
@@ -143,7 +143,7 @@ class Street extends Phaser.Scene {
                 this.objectivesText.setX((game.config.width/2) - (this.objectivesText.width/2));
             },
             callbackScope: this,
-            delay: 1000
+            delay: 5000
         })
 
         this.time.addEvent({
@@ -152,7 +152,7 @@ class Street extends Phaser.Scene {
                 this.objectivesText.setVisible(false);
             },
             callbackScope: this,
-            delay: 6000,
+            delay: 10000,
         });
 
         // Recognise NPCs when overlapping
@@ -177,6 +177,12 @@ class Street extends Phaser.Scene {
         }
         this.scene.launch("street-hud");
         this.hud = this.scene.get("street-hud");
+
+        // TITLE CARD
+        if (this.scene.isActive("street-title")) {
+            this.scene.stop("street-title");
+        }
+        this.scene.launch("street-title");
     }
 
     update() {

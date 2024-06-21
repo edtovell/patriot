@@ -104,7 +104,7 @@ class Desert extends Phaser.Scene {
             callbackScope: this,
             delay: 5000,
             loop: true,
-            startAt: -6000,
+            startAt: -9000,
         });
 
         var targetCollider = this.physics.add.overlap(this.bullets, this.targets, this.killTarget, null, this)
@@ -121,7 +121,7 @@ class Desert extends Phaser.Scene {
                 this.objectivesText.setX((game.config.width/2) - (this.objectivesText.width/2));
             },
             callbackScope: this,
-            delay: 2000
+            delay: 5000
         })
 
         this.time.addEvent({
@@ -130,7 +130,7 @@ class Desert extends Phaser.Scene {
                 this.objectivesText.setVisible(false);
             },
             callbackScope: this,
-            delay: 6000,
+            delay: 10000,
         });
 
         // INSTANTIATE HUD
@@ -139,6 +139,12 @@ class Desert extends Phaser.Scene {
         }
         this.scene.launch("desert-hud");
         this.hud = this.scene.get("desert-hud");
+
+        // TITLE CARD
+        if (this.scene.isActive("desert-title")) {
+            this.scene.stop("desert-title");
+        }
+        this.scene.launch("desert-title");
     }
 
     update() {
